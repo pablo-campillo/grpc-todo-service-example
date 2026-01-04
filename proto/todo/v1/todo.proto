@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+option go_package = "github.com/pablo-campillo/grpc-todo-service-example/proto/todo/v1";
+
+message DummyMessage {}
+
+service DummyService {}
