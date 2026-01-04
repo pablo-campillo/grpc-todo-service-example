@@ -1,0 +1,21 @@
+services:
+  dev:
+    image: mcr.microsoft.com/devcontainers/go:1
+    volumes:
+      # Mount the project directory
+      - ..:/workspaces/grpc-todo-service-example:cached
+
+    mem_limit: 8192m
+    shm_size: 2560m
+    networks:
+      - fc-se-core-dev-net
+
+    # Keep the container running
+    command: sleep infinity
+
+networks:
+  fc-se-core-dev-net:
+    driver: bridge
+
+volumes:
+  todo-grpc-vscode-server:
