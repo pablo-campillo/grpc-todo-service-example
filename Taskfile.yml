@@ -1,0 +1,55 @@
+version: '3'
+
+vars:
+  BIN_DIR: ./bin
+
+tasks:
+  build:clean:
+    desc: Clean the build directory
+    cmds:
+      - rm -rf {{.BIN_DIR}}
+
+  build:setup:
+    cmds:
+      - mkdir -p {{.BIN_DIR}}
+
+  build:proto:
+    desc: Build the protobuf files
+    cmds:
+      - protoc --go_out=. --go_opt=module=github.com/pablo-campillo/grpc-todo-service-example --go-grpc_out=. --go-grpc_opt=module=github.com/pablo-campillo/grpc-todo-service-example proto/todo/v1/todo.proto
+
+  build:client:
+    desc: Build the client application
+    deps:
+      - build:setup
+    cmds:
+      - go build -o {{.BIN_DIR}}/grpc-client ./client
+
+  build:server:
+    desc: Build the server application
+    deps:
+      - build:setup
+    cmds:
+      - go build -o {{.BIN_DIR}}/grpc-server ./server
+
+  build:all:
+    desc: Build both client and server applications
+    cmds:
+      - task: build:proto
+      - task: build:client
+      - task: build:server
+
+  run:server:
+    desc: Run the server application
+    cmds:
+      - "{{.BIN_DIR}}/grpc-server 0.0.0.0:50051"
+
+  run:client:
+    desc: Run the client application
+    cmds:
+      - "{{.BIN_DIR}}/grpc-client  0.0.0.0:50051"
+
+  default:
+    desc: "Build both client and server"
+    cmds:
+      - task: build:all
